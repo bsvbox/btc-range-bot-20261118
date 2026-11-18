@@ -17,12 +17,12 @@ import { runBars, type BarsState, type Batch } from "./vendor/makefun-bars.ts";
 
 const SYMBOL = "CBBTC";
 // Six hours of one-minute bars in the rolling mean.
-const WINDOW_BARS = 90;
+const WINDOW_BARS = 60;
 // Bars the mean must have seen before the first trade: with only a few closes
 // the mean is noise, not a range.
 const MIN_BARS = 30;
 // Buy this far below the mean, sell this far above it (fraction of the mean).
-const BAND = 0.015;
+const BAND = 0.010;
 // Take-profit and stop-loss versus the position cost, fees included (fraction).
 const TAKE_PROFIT = 0.015;
 const STOP_LOSS = 0.012;
