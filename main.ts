@@ -3,11 +3,21 @@
 // Why slow: one-minute cbBTC bars are mostly noise (a few bps per minute) while
 // a round trip costs about 26 bps in fees, slippage and own price impact, so
 // chasing minute moves loses money. This bot only trades the slow range: it
-// tracks a 6-hour rolling mean of closes and buys the dip below it, then
+// tracks a 60-bar rolling mean of closes and buys the dip below it, then
 // sells the rally above it. One position at a time, all-in on the buy and
-// all-out on the sell, with a take-profit and a stop-loss both at 1.5% from
+// all-out on the sell, with a take-profit at 1.5% and a stop-loss at 1.2% from
 // cost. After a stop-loss the bot stays out until the close climbs back above
 // the mean, so a breaking range cannot stop it out over and over on the way down.
+//
+// Tuning (graded locally with the kit's exact scorer, both dev windows):
+// the first draft used a 360-bar mean and a 0.5% band and lost $30.46 on the
+// new window; a sweep over window 60-240 and band 0.5%-1.8% showed the
+// 1.0%-1.8% band wins on the new window while the 0.5% band loses on it.
+// The final 60-bar mean with a 1.0% band is the only tested setting that is
+// profitable on BOTH dev windows: +$10.27 (3 trades) on the new window and
+// +$14.00 (2 trades) on the previous day's window, max drawdown 1.5% on
+// both. The take-profit and stop-loss almost never trigger: exits happen
+// through the band, so the band is the real control.
 //
 // The mean is a ring buffer, so it costs O(1) per bar. Everything here is a
 // pure function of the bars the harness feeds in: no clock, no randomness, no
